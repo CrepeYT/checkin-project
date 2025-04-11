@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 import React from 'react'
 
 const page = () => {
@@ -10,9 +12,11 @@ const page = () => {
       To make the lives of students easier<br />
       when checking in to class.
     </p>
-    <button className="bg-purple-400 text-white font-semibold px-6 py-3 rounded-xl hover:bg-purple-500 transition">
+    <Link href={'/login'}>
+    <Button  className="bg-purple-400 text-white font-semibold px-6 py-3 rounded-xl hover:bg-purple-500 transition">
       Start check-in
-    </button>
+    </Button>
+    </Link>
   </div>
   )
 }
