@@ -1,8 +1,11 @@
+import Usercard from '@/components/UserInterface/Usercard'
 import React from 'react'
 
 const DashboardPage = () => {
   return (
-    <div>DashboardPage</div>
+    <div>
+      <Usercard/>
+      </div>
   )
 }
 

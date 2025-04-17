@@ -4,6 +4,7 @@ import SignedOutLinks from './SignedOutLinks'
 import SignedInLinks from './SignedInLinks'
 import { SignedIn,SignedOut } from '@clerk/nextjs'
 import Logo from './Logo'
+import BodyInterface from '../UserInterface/BodyInterface'
 
 const Navbar = () => {
     return (
@@ -12,12 +13,11 @@ const Navbar = () => {
                 {/* LOGO */}
                 <Logo/>
 
-                <div className='flex gap-20 border-b-2 border-purple-600 pb-2 text-purple-600 text-xl'>
+                <div className='flex gap-20 border-b-2 border-purple-600 pb-2 text-purple-600 text-8'>
                     <SignedIn>
                     <Link href={'/dashboard'}>Home</Link>
                     <Link href={'/about'}>About Us</Link>
                     <Link href={'/contact'}>Contact</Link>
-                    <SignedOutLinks/>
                     </SignedIn>
                     <SignedOut>
                     <Link href={'/'}>Home</Link>
