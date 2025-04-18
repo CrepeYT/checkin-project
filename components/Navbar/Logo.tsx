@@ -1,11 +1,12 @@
-import Image from 'next/image'
 import React from 'react'
-
+import { BookOpenCheck } from 'lucide-react';
 const Logo = () => {
   return (
     <div>
-      <Image src='/assets/images/apps.png' alt={'LOGO'} width={40}
-        height={40} ></Image>
+      <BookOpenCheck 
+      color='#6500E0'
+      size={40}
+       />
     </div>
   )
 }

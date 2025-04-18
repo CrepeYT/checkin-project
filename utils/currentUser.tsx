@@ -1,5 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 
+// อันนี้คือชื่อของเราที่ Login ด้วย อีเมล์ดึงข้อมูลมาจาก clerk
+
 export default async function GetUserDetails() {
   // Get the userId from auth() -- if null, the user is not signed in
   const { userId} = await auth()

@@ -1,10 +1,8 @@
 import Link from 'next/link'
 import React from 'react'
-import SignedOutLinks from './SignedOutLinks'
 import SignedInLinks from './SignedInLinks'
 import { SignedIn,SignedOut } from '@clerk/nextjs'
 import Logo from './Logo'
-import BodyInterface from '../UserInterface/BodyInterface'
 
 const Navbar = () => {
     return (
