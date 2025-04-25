@@ -11,6 +11,7 @@ const MyClassPage = ({ onNext }: { onNext: () => void }) => {
           My Class
         </h2>
         <button className="text-2xl text-purple-600" onClick={onNext}>
+          {/* อันนี้ลูกศรเอามาจาก lucide-react*/}
           <ArrowRight />
         </button>
       </div>
@@ -30,6 +31,7 @@ const ClassPage = ({ onNext }: { onNext: () => void }) => {
           Class
         </h2>
         <button className="text-2xl text-purple-600" onClick={onNext}>
+          {/* อันนี้ลูกศรเอามาจาก lucide-react*/}
           <ArrowLeft />
         </button>
       </div>
@@ -39,19 +41,9 @@ const ClassPage = ({ onNext }: { onNext: () => void }) => {
     </div>
     
   );
-   <div className='md:-mt-80 md:-mr-105'>
-   <div className="gap-4 mt-30 flex justify-center md:flex-col">
-       <button className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100">
-           Scan QR
-       </button>
-       <button className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100">
-           Add a class
-       </button>
-   </div>
-</div>
 };
 
-//เปลี่ยนหน้า
+//เปลี่ยนหน้า อันนี้ เปลี่ยนหน้านนั้นแหละอืม
 const ClassSection = () => {
   const [page, setPage] = useState(0);
 

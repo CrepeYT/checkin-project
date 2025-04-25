@@ -8,7 +8,7 @@ const Navbar = () => {
     return (
         <nav>
             <div className='flex justify-between p-4 '>
-                {/* LOGO */}
+                {/* LOGO ใส่ตรงนี้*/}
                 <Logo/>
 
                 <div className='flex gap-20 border-b-2 border-purple-600 pb-2 text-purple-600 text-8'>

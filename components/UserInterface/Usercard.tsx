@@ -18,7 +18,7 @@ const Usercard = () => {
                     <button className="text-purple-600 text-2xl"><ArrowLeft /></button>
                     <button className="text-purple-600 text-2xl"><SignedOutLinks /></button>
                 </div>
-                {/* ส่วนของรูปไฟล์ */}
+                {/* ส่วนของรูปโปรไฟล์ปรับแปต่งได้ถ้าไม่พอใจ มี Dose ในREADME */}
                 <div>
                     <UserButton appearance={
                         {

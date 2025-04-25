@@ -4,7 +4,10 @@ import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs'
 import React from 'react'
 const BodyInterface = () => {
     return (
+        // อันนี้หน้าที่ User เห็น
+        // SignedOut SignedIn เป็นของ clerk ไปอ่าน Dose ได้ดีสัสๆโครตสะดวก
         <div>
+            {/* อันนี้คือหน้าที่ USer เห็นตอน logout ออกมา */}
         <SignedOut>
         <div className="flex flex-col space-y-4 max-w-md p-20 pt-40">
             <h1 className="text-5xl font-bold text-purple-600">Check-in</h1>
@@ -19,6 +22,7 @@ const BodyInterface = () => {
                 </button>
             </SignInButton>
         </div>
+        {/* อันนี้ส่วนที่ User เห็นตอนเข้าสู่ระบบไปแล้วจะเห็นหน้า DashboardPage */}
         </SignedOut>
         <SignedIn>
             <DashboardPage/>
