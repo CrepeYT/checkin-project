@@ -4,6 +4,8 @@ import { UserButton } from '@clerk/nextjs'
 import { ArrowLeft, LogIn } from 'lucide-react';
 import React from 'react'
 import SignedOutLinks from '../Navbar/SignedOutLinks';
+import AddClassPopup from '../FromUser/ButtonCraete';
+import Howtouse from '../Navbar/Howtouse';
 
 const Usercard = () => {
     return (
@@ -11,7 +13,8 @@ const Usercard = () => {
             {/* โปรไฟล์ */}
             <div className="border-2 border-purple-500 rounded-2xl p-4  m-20 flex flex-col items-center w-70 h-80">
                 {/* ตรงนี้คือIcons */}
-                <div className="flex justify-between w-full mb-2">
+                <div className="flex  w-full mb-2">
+                    <Howtouse/>
                     <button className="text-purple-600 text-2xl"><ArrowLeft /></button>
                     <button className="text-purple-600 text-2xl"><SignedOutLinks /></button>
                 </div>
@@ -38,17 +41,8 @@ const Usercard = () => {
                     <hr className="my-2 border-purple-300" />
                     <h1 className="text-purple-700"><GetUserEmail /></h1>
                 </div>
-                {/* Button */}
-                <div className='md:-mt-80 md:-mr-105'>
-                    <div className="gap-4 mt-30 flex justify-center md:flex-col">
-                        <button className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100">
-                            Scan QR
-                        </button>
-                        <button className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100">
-                            Add a class
-                        </button>
-                    </div>
-                </div>
+                {/* ปุ่ม */}
+                <AddClassPopup />
             </div>
         </div>
 

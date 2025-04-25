@@ -2,7 +2,7 @@
 import React from 'react'
 import { SignOutButton } from '@clerk/nextjs'
 import { LogIn } from 'lucide-react'
-// import { toast } from "sonner"
+import { toast } from "sonner"
 
 const SignedOutLinks = () => {
 
