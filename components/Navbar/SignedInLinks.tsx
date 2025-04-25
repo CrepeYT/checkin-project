@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 const SignedInLinks = () => {
 
 const handleLogin =()=>{
-  toast("เข้าสู่ระบบเรียบร้อยแล้วสุดหล่อ")
+  toast("กำลังเข้าสูบระบบแล้วสุดหล่อ")
 }
 
   return (

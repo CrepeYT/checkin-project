@@ -13,8 +13,7 @@ const Usercard = () => {
             {/* โปรไฟล์ */}
             <div className="border-2 border-purple-500 rounded-2xl p-4  m-20 flex flex-col items-center w-70 h-80">
                 {/* ตรงนี้คือIcons */}
-                <div className="flex  w-full mb-2">
-                    <Howtouse/>
+                <div className="flex  w-full mb-2 justify-between">
                     <button className="text-purple-600 text-2xl"><ArrowLeft /></button>
                     <button className="text-purple-600 text-2xl"><SignedOutLinks /></button>
                 </div>
