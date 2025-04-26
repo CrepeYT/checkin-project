@@ -4,7 +4,7 @@ import { UserButton } from '@clerk/nextjs'
 import { ArrowLeft, LogIn } from 'lucide-react';
 import React from 'react'
 import SignedOutLinks from '../Navbar/SignedOutLinks';
-import AddClassPopup from '../FromUser/ButtonCraete';
+import AddClassPopup from '../FromUser/ButtonCreate';
 import Howtouse from '../Navbar/Howtouse';
 
 const Usercard = () => {

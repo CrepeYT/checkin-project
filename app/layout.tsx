@@ -26,6 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // อยากใ้ห้อะไรอยู่ทุกหน้าเอาฟังชั่นมาใส่ตรงนี้ เช่น Navbar
     <ClerkProvider>
     <html lang="en">
       <body
@@ -34,6 +35,7 @@ export default function RootLayout({
         <Navbar/>
         {children}
         <Toaster />
+        
       </body>
     </html>
         </ClerkProvider>
