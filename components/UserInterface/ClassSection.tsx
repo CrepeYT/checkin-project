@@ -90,9 +90,9 @@ const ViewClassDetailPage = ({ classData, onBack }: { classData: any; onBack: ()
           กลับ
         </button>
 
-        {/* ปุ่ม export */}
+       
 
-        {/* Card */}
+
         <div className="border-2 border-purple-700 rounded-2xl p-6">
           <h3 className="text-center text-2xl font-bold text-purple-700 mb-4">{classData.name}</h3>
           <div className="text-center text-purple-700">
