@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from "react"; 
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { FaTimes } from "react-icons/fa";
@@ -15,11 +15,10 @@ export default function AddClassPopup() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
+  const [classId, setClassId] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   const { user, isSignedIn } = useUser();
-
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
-  
 
   const handleCreateClass = async () => {
     if (!className.trim()) {
@@ -51,6 +50,7 @@ export default function AddClassPopup() {
 
       const newQrCode = `https://your-app-url/class/${docRef.id}`;
       setQrCode(newQrCode);
+      setClassId(docRef.id); 
 
       setSuccess(true);
       setClassName("");
@@ -68,6 +68,41 @@ export default function AddClassPopup() {
     }
   };
 
+  const handleUploadCSV = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!classId) {
+      alert("กรุณาสร้างคลาสก่อนอัปโหลดนักเรียน");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const text = e.target?.result;
+      if (typeof text !== "string") return;
+
+      const lines = text.split("\n");
+      for (const line of lines) {
+        const [name, studentId, major] = line.trim().split(",");
+
+        if (name && studentId && major) {
+          await addDoc(collection(db, "students"), {
+            name,
+            studentId,
+            major,
+            classId,
+            createdAt: Timestamp.now(),
+          });
+        }
+      }
+      alert("อัปโหลดข้อมูลนักเรียนสำเร็จ!");
+    };
+
+    reader.readAsText(file);
+  };
+
+  
   const closePopup = () => {
     setShowPopup(false);
     setClassName("");
@@ -76,16 +111,12 @@ export default function AddClassPopup() {
     setQrCode(null);
   };
 
-  // เริ่มต้นกล้องเมื่อ scanning = true
   useEffect(() => {
     if (scanning) {
       if (!scannerRef.current) {
         scannerRef.current = new Html5QrcodeScanner(
           "qr-reader",
-          {
-            fps: 10,
-            qrbox: 250,
-          },
+          { fps: 10, qrbox: 250 },
           false
         );
       }
@@ -93,7 +124,7 @@ export default function AddClassPopup() {
       scannerRef.current.render(
         (decodedText) => {
           alert(`สแกนสำเร็จ: ${decodedText}`);
-          setScanning(false); // ปิดกล้องเมื่อสแกนสำเร็จ
+          setScanning(false);
         },
         (errorMessage) => {
           console.warn("QR Code scan error", errorMessage);
@@ -112,7 +143,6 @@ export default function AddClassPopup() {
 
   return (
     <>
-      {/* ปุ่ม Add class */}
       <div className="md:-mt-80 md:-mr-105">
         <div className="gap-4 mt-30 flex justify-center md:flex-col">
           <button
@@ -128,11 +158,26 @@ export default function AddClassPopup() {
           >
             Add a class
           </button>
+          <button
+            onClick={() => document.getElementById('csv-upload')?.click()}
+            className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100"
+          >
+            Upload CSV
+          </button>
+          
+          <input
+            id="csv-upload"
+            type="file"
+            accept=".csv"
+            onChange={handleUploadCSV}
+            className="hidden"
+          />
+          
+         
+         
         </div>
       </div>
-      
 
-      {/* Popup สร้างคลาส */}
       {showPopup && (
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-lg flex p-6 relative max-w-3xl w-full">
@@ -183,8 +228,7 @@ export default function AddClassPopup() {
               <button
                 onClick={handleCreateClass}
                 disabled={loading}
-                className={`bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg w-full font-semibold transition-colors ${loading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                className={`bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg w-full font-semibold transition-colors ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -196,21 +240,11 @@ export default function AddClassPopup() {
                   </span>
                 ) : "สร้างคลาส"}
               </button>
-
-              {/* แสดง QR Code */}
-              {qrCode && (
-                <div className="mt-4">
-                  <h3 className="text-purple-700 font-bold text-lg mb-2">QR Code สำหรับเข้าเรียน:</h3>
-                  <QRCode value={qrCode} size={256} />
-                  <p className="text-center mt-2 text-purple-600">สแกนเพื่อเข้าเรียน</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* หน้าจอสแกน QR Code */}
       {scanning && (
         <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
           <button

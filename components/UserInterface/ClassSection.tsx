@@ -159,19 +159,7 @@ const ViewClassDetailPage = ({ classData, onBack }: { classData: any; onBack: ()
               <p className="text-center text-gray-400">ไม่มีข้อมูลสมาชิก</p>
             )}
           </div>
-
-          {/* ปุ่ม Upload CSV และ สร้าง QR */}
           <div className="mt-6 flex flex-col gap-4 items-center">
-            <label className="border border-purple-600 text-purple-600 px-6 py-2 rounded-full hover:bg-purple-100 cursor-pointer text-center">
-              Upload CSV
-              <input
-                type="file"
-                accept=".csv"
-                onChange={handleUploadCSV}
-                className="hidden"
-              />
-            </label>
-
             <button
               className="border border-purple-600 text-purple-600 px-6 py-2 rounded-full hover:bg-purple-100"
               onClick={handleCreateQR}
