@@ -1,10 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
+import QRCode from "react-qr-code";
+import { Html5QrcodeScanner } from "html5-qrcode";
 
 export default function AddClassPopup() {
   const [showPopup, setShowPopup] = useState(false);
@@ -12,7 +14,12 @@ export default function AddClassPopup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const { user, isSignedIn } = useUser(); // ใช้ useUser จาก Clerk
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [scanning, setScanning] = useState(false);
+  const { user, isSignedIn } = useUser();
+
+  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  
 
   const handleCreateClass = async () => {
     if (!className.trim()) {
@@ -29,10 +36,10 @@ export default function AddClassPopup() {
       setLoading(true);
       setError(null);
 
-      const userId = user.id; // ใช้ id จาก Clerk
+      const userId = user.id;
       const userEmail = user.primaryEmailAddress?.emailAddress || "";
 
-      await addDoc(collection(db, "classes"), {
+      const docRef = await addDoc(collection(db, "classes"), {
         name: className.trim(),
         created_by: userId,
         created_at: Timestamp.fromDate(new Date()),
@@ -42,12 +49,16 @@ export default function AddClassPopup() {
         last_updated: Timestamp.fromDate(new Date()),
       });
 
+      const newQrCode = `https://your-app-url/class/${docRef.id}`;
+      setQrCode(newQrCode);
+
       setSuccess(true);
       setClassName("");
 
       setTimeout(() => {
         setShowPopup(false);
         setSuccess(false);
+        setQrCode(null);
       }, 2000);
     } catch (error) {
       console.error("Error details:", error);
@@ -62,16 +73,55 @@ export default function AddClassPopup() {
     setClassName("");
     setError(null);
     setSuccess(false);
+    setQrCode(null);
   };
+
+  // เริ่มต้นกล้องเมื่อ scanning = true
+  useEffect(() => {
+    if (scanning) {
+      if (!scannerRef.current) {
+        scannerRef.current = new Html5QrcodeScanner(
+          "qr-reader",
+          {
+            fps: 10,
+            qrbox: 250,
+          },
+          false
+        );
+      }
+
+      scannerRef.current.render(
+        (decodedText) => {
+          alert(`สแกนสำเร็จ: ${decodedText}`);
+          setScanning(false); // ปิดกล้องเมื่อสแกนสำเร็จ
+        },
+        (errorMessage) => {
+          console.warn("QR Code scan error", errorMessage);
+        }
+      );
+    }
+
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.clear().catch((error) => {
+          console.error("Clear html5-qrcode error", error);
+        });
+      }
+    };
+  }, [scanning]);
 
   return (
     <>
       {/* ปุ่ม Add class */}
       <div className="md:-mt-80 md:-mr-105">
         <div className="gap-4 mt-30 flex justify-center md:flex-col">
-          <button className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100">
+          <button
+            className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100"
+            onClick={() => setScanning(true)}
+          >
             Scan QR
           </button>
+
           <button
             className="border border-purple-600 text-purple-600 px-4 py-1 rounded-full hover:bg-purple-100"
             onClick={() => setShowPopup(true)}
@@ -80,8 +130,9 @@ export default function AddClassPopup() {
           </button>
         </div>
       </div>
+      
 
-      {/* Popup */}
+      {/* Popup สร้างคลาส */}
       {showPopup && (
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-lg flex p-6 relative max-w-3xl w-full">
@@ -116,7 +167,7 @@ export default function AddClassPopup() {
                 }}
                 placeholder="กรอกชื่อคลาส"
                 className="w-full border border-purple-300 rounded-md px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-300"
-                onKeyDown={(e) => e.key === 'Enter' && handleCreateClass()}
+                onKeyDown={(e) => e.key === "Enter" && handleCreateClass()}
               />
 
               {error && (
@@ -145,8 +196,31 @@ export default function AddClassPopup() {
                   </span>
                 ) : "สร้างคลาส"}
               </button>
+
+              {/* แสดง QR Code */}
+              {qrCode && (
+                <div className="mt-4">
+                  <h3 className="text-purple-700 font-bold text-lg mb-2">QR Code สำหรับเข้าเรียน:</h3>
+                  <QRCode value={qrCode} size={256} />
+                  <p className="text-center mt-2 text-purple-600">สแกนเพื่อเข้าเรียน</p>
+                </div>
+              )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* หน้าจอสแกน QR Code */}
+      {scanning && (
+        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
+          <button
+            className="absolute top-2 right-1 text-purple-500 hover:text-purple-700"
+            onClick={() => setScanning(false)}
+          >
+            <FaTimes size={40} />
+          </button>
+          <div id="qr-reader" style={{ width: "300px" }} />
+          <p className="mt-4 text-purple-600">กรุณาสแกน QR Code</p>
         </div>
       )}
     </>
