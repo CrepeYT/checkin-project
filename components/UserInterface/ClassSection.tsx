@@ -2,17 +2,45 @@
 
 import React, { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot, setDoc, doc, where } from "firebase/firestore";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import QRCode from "react-qr-code";
+import { useUser } from "@clerk/clerk-react";
 
-// -- หน้าที่ 1: MyClassPage
-const MyClassPage = ({ onNext, onSelectClass }: { onNext: () => void; onSelectClass: (classData: any) => void }) => {
+const SyncUserToFirebase = () => {
+  const { isLoaded, isSignedIn, user } = useUser();
+  
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      const userData = {
+        id: user.id,
+        name: user.fullName,
+        email: user.primaryEmailAddress?.emailAddress,
+      };
+
+      const docRef = doc(db, "users", user.id);
+      setDoc(docRef, userData, { merge: true });
+    }
+  }, [isLoaded, isSignedIn, user]);
+
+  return null;
+};// -- หน้าที่ 1: MyClassPage
+const MyClassPage = ({
+  onNext,
+  onSelectClass,
+}: {
+  onNext: () => void;
+  onSelectClass: (classData: any) => void;
+}) => {
+  const { isLoaded, isSignedIn, user } = useUser();
   const [classes, setClasses] = useState<any[]>([]);
 
   useEffect(() => {
+    if (!isLoaded || !isSignedIn || !user) return;
+
     const classesRef = collection(db, "classes");
-    const q = query(classesRef);
+    const q = query(classesRef, where("owner_email", "==", user.primaryEmailAddress?.emailAddress));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const classList: any[] = [];
@@ -23,7 +51,7 @@ const MyClassPage = ({ onNext, onSelectClass }: { onNext: () => void; onSelectCl
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [isLoaded, isSignedIn, user]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-10 flex justify-center">
@@ -61,6 +89,7 @@ const MyClassPage = ({ onNext, onSelectClass }: { onNext: () => void; onSelectCl
     </div>
   );
 };
+
 
 // -- หน้าที่ 2: ClassPage
 const ClassPage = ({ onBack }: { onBack: () => void }) => {
@@ -179,7 +208,6 @@ const ViewClassDetailPage = ({ classData, onBack }: { classData: any; onBack: ()
     </div>
   );
 };
-
 // -- Controller หลัก
 const ClassSection = () => {
   const [page, setPage] = useState<"myclass" | "class" | "view">("myclass");
@@ -200,11 +228,13 @@ const ClassSection = () => {
 
   return (
     <>
+      {/* ✅ ใส่ไว้ให้ sync user ไป Firebase หลัง login */}
+      <SyncUserToFirebase />
+
       {page === "myclass" && <MyClassPage onNext={handleNext} onSelectClass={handleSelectClass} />}
       {page === "class" && <ClassPage onBack={handleBack} />}
       {page === "view" && selectedClass && <ViewClassDetailPage classData={selectedClass} onBack={handleBack} />}
     </>
   );
 };
-
 export default ClassSection;

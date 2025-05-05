@@ -6,6 +6,7 @@ import React from 'react'
 import SignedOutLinks from '../Navbar/SignedOutLinks';
 import AddClassPopup from '../FromUser/ButtonCreate';
 import Howtouse from '../Navbar/Howtouse';
+import GetUserID from '@/utils/currentIdUser';
 
 const Usercard = () => {
     return (
@@ -39,6 +40,7 @@ const Usercard = () => {
                     <h2 className="text-purple-700 font-bold"><GetUserDetails /></h2>
                     <hr className="my-2 border-purple-300" />
                     <h1 className="text-purple-700"><GetUserEmail /></h1>
+                    
                 </div>
                 {/* ปุ่ม */}
                 <AddClassPopup />
